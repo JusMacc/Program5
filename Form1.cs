@@ -5,6 +5,7 @@ namespace Program5
         public Form1()
         {
             InitializeComponent();
+            MessageBox.Show("Hello World");
         }
     }
 }
