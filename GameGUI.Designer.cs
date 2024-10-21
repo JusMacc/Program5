@@ -1,6 +1,6 @@
 ﻿namespace Program5
 {
-    partial class Form1
+    partial class GameGUI
     {
         /// <summary>
         ///  Required designer variable.
