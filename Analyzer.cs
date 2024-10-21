@@ -8,12 +8,11 @@ namespace Program5
 {
     abstract internal class Analyzer
     {
-       
-            private char[,] grid;
-            private Tuple<int, int, bool>[] samples;
-            private int guessCount;
-            private int rows;
-            private int cols;
+            protected char[,] grid;
+            protected Tuple<int, int, bool>[] samples;
+            protected int guessCount;
+            protected int rows;
+            protected int cols;
 
             public Analyzer(int rows, int cols)
             {
@@ -26,7 +25,11 @@ namespace Program5
                 PlaceSamples();
             }
 
-            //Getter functions
+            // Abstract methods to be implemented by derived classes
+            public abstract void AnalyzeSample(int row, int col);
+            public abstract void MakeGuess(int row, int col);
+
+            //getter fucntions
             public int GetRows()
             {
                 return rows;
@@ -44,6 +47,8 @@ namespace Program5
             {
                 guessCount = x;
             }
+
+            // Concrete method: Initializes the grid with '~'
             private void InitializeGrid()
             {
                 for (int i = 0; i < rows; i++)
@@ -55,8 +60,7 @@ namespace Program5
                 }
             }
 
-            //this function creates the samples and makes sure that the
-            //samples are not in the same spot
+            // Concrete method: Places the samples at random positions
             private void PlaceSamples()
             {
                 Random rand = new Random();
@@ -66,19 +70,29 @@ namespace Program5
                     samples[1] = new Tuple<int, int, bool>(rand.Next(rows), rand.Next(cols), false);
                 } while (samples[1].Item1 == samples[0].Item1 && samples[1].Item2 == samples[0].Item2);
             }
+        }
 
-            //this function displays the grid to the form
-            public void DisplayGrid(ListBox listBox)
+        public class DNAAnalyzer : Analyzer
+        {
+            public DNAAnalyzer(int rows, int cols) : base(rows, cols) { }
+
+            // Example of how to implement the abstract method for analyzing a sample
+            public override void AnalyzeSample(int row, int col)
             {
-                listBox.Items.Clear();
-                for (int i = 0; i < rows; i++)
+                // Simple analysis logic (for example, marking the sample as analyzed)
+                if (samples[0].Item1 == row && samples[0].Item2 == col)
+                    samples[0] = new Tuple<int, int, bool>(row, col, true);
+                else if (samples[1].Item1 == row && samples[1].Item2 == col)
+                    samples[1] = new Tuple<int, int, bool>(row, col, true);
+            }
+
+            // Example of how to implement the abstract method for making a guess
+            public override void MakeGuess(int row, int col)
+            {
+                guessCount++;
+                if (grid[row, col] == '~')
                 {
-                    string row = "";
-                    for (int j = 0; j < cols; j++)
-                    {
-                        row += grid[i, j];
-                    }
-                    listBox.Items.Add(row);
+                    grid[row, col] = 'X'; // Mark the guessed position
                 }
             }
 
